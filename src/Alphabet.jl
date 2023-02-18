@@ -15,3 +15,4 @@ end
 letters(A::Alphabet) = A.letters
 indexof(A::Alphabet{X}, x::X) where {X} = A.indices[x]
 Base.length(A::Alphabet) = length(A.letters)
+Base.iterate(A::Alphabet, state) = iterate(A.letters)
