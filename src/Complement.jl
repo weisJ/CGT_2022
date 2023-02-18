@@ -4,7 +4,7 @@ struct ComplementAutomaton{S,X} <: AutomatonWrapper{S,X}
 end
 
 wrappee(A::ComplementAutomaton{S,X}) where {S,X} = A.inner
-is_terminal(A::ComplementAutomaton{S,X}, state::S) where {S,X} = !is_terminal(inner(A), state)
+is_terminal(A::ComplementAutomaton{S,X}, state::S) where {S,X} = !is_terminal(wrappee(A), state)
 
 function complement(A::AbstractAutomaton{S,X}) where {S,X}
     return ComplementAutomaton(A)
