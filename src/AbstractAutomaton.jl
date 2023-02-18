@@ -12,7 +12,14 @@ function alphabet(::AbstractAutomaton) end
 	hasedge(A::AbstractAutomaton{S,X}, σ, label)
 Check if `A` contains an edge starting at `σ` labeled by `label`
 """
-function has_edge(::AbstractAutomaton,  label::X, state::S) where {S,X} end
+function has_edge(::AbstractAutomaton{S,X},  label::X, state::S) where {S,X} end
+
+"""
+    edges(A::AbstractAutomaton{S,X}, σ)
+Returns all edges in `A`, which start at `σ`. Ad edge is represented by
+a pair `(l,τ)` where `l` is the label and `τ` the target of the edge.
+"""
+function edges(::AbstractAutomaton{S,X}, state::S) where {S,X} end
 
 """
 	trace(A::AbstractAutomaton, label, σ)
