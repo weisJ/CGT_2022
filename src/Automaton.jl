@@ -34,11 +34,21 @@ is_terminal(A::Automaton{X}, state::State{X}) where {X} = state ∈ A.terminal_s
 states(A::Automaton{X}) where {X} = A.states
 
 create_state(A::Automaton{X}) where {X} = State(A)
+
 function add_state!(A::Automaton{X}, state::State{X}) where {X}
     push!(A.states, state)
     return state
 end
+
 function add_edge!(A::Automaton{X}, source::State{X}, label::X, target::State{X}) where {X}
     @assert !has_edge(A, source, label)
     source.transitions[indexof(alphabet(A), label)] = target
+end
+
+function mark_terminal!(A::Automaton{X}, state::State{X}, terminal::Bool) where {X}
+    if terminal
+        push!(A.terminal_states, state)
+    else
+        delete!(A.terminal_states, state)
+    end
 end

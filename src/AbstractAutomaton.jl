@@ -64,10 +64,17 @@ The added state will be returned.
 function add_state!(A::AbstractAutomaton{S,X}, state::S=create_state(A)) where {S,X} end
 
 """
-add_edge!(::AbstractAutomaton{S,X}, source::S, label::X, target::S)
+    add_edge!(::AbstractAutomaton{S,X}, source::S, label::X, target::S)
 Adds a new edge to the automaton given by `(source, label, target)`.
 """
 function add_edge!(::AbstractAutomaton{S,X}, source::S, label::X, target::S) where {X,S} end
+
+"""
+    mark_terminal!(::AbstractAutomaton{S,X}, state::S, terminal::Bool=true)
+Mark the given state as being terminal i.e. accepting. By changing the `terminal``
+parameter to `false` one is also able to unmark the state.
+"""
+function mark_terminal!(::AbstractAutomaton{S,X}, state::S, terminal::Bool=true) where {X,S} end
 
 """
 	initial(A::AbstractAutomaton{S,X})
