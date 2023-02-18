@@ -56,27 +56,6 @@ It will not be added to the automaton.
 function create_state(::AbstractAutomaton{S,X}) where {S,X} end
 
 """
-    add_state!(A::AbstractAutomaton{S,X}, state=create_state(A))
-Adds a new state to the automaton. The state will not be connected to any other state by
-default. If no state is passed a new state will be created.
-The added state will be returned.
-"""
-function add_state!(A::AbstractAutomaton{S,X}, state::S=create_state(A)) where {S,X} end
-
-"""
-    add_edge!(::AbstractAutomaton{S,X}, source::S, label::X, target::S)
-Adds a new edge to the automaton given by `(source, label, target)`.
-"""
-function add_edge!(::AbstractAutomaton{S,X}, source::S, label::X, target::S) where {X,S} end
-
-"""
-    mark_terminal!(::AbstractAutomaton{S,X}, state::S, terminal::Bool=true)
-Mark the given state as being terminal i.e. accepting. By changing the `terminal``
-parameter to `false` one is also able to unmark the state.
-"""
-function mark_terminal!(::AbstractAutomaton{S,X}, state::S, terminal::Bool=true) where {X,S} end
-
-"""
 	initial(A::AbstractAutomaton{S,X})
 Returns an initial `state::S` of `A`.
 """

@@ -35,17 +35,32 @@ states(A::Automaton{X}) where {X} = A.states
 
 create_state(A::Automaton{X}) where {X} = State(A)
 
-function add_state!(A::Automaton{X}, state::State{X}) where {X}
+"""
+    add_state!(A::AbstractAutomaton{S,X}, state=create_state(A))
+Adds a new state to the automaton. The state will not be connected to any other state by
+default. If no state is passed a new state will be created.
+The added state will be returned.
+"""
+function add_state!(A::Automaton{X}, state::State{X} = create_state(A)) where {X}
     push!(A.states, state)
     return state
 end
 
+"""
+    add_edge!(::AbstractAutomaton{S,X}, source::S, label::X, target::S)
+Adds a new edge to the automaton given by `(source, label, target)`.
+"""
 function add_edge!(A::Automaton{X}, source::State{X}, label::X, target::State{X}) where {X}
     @assert !has_edge(A, source, label)
     source.transitions[indexof(alphabet(A), label)] = target
 end
 
-function mark_terminal!(A::Automaton{X}, state::State{X}, terminal::Bool) where {X}
+"""
+    mark_terminal!(::AbstractAutomaton{S,X}, state::S, terminal::Bool=true)
+Mark the given state as being terminal i.e. accepting. By changing the `terminal``
+parameter to `false` one is also able to unmark the state.
+"""
+function mark_terminal!(A::Automaton{X}, state::State{X}, terminal::Bool = true) where {X}
     if terminal
         push!(A.terminal_states, state)
     else
