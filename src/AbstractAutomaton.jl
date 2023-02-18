@@ -28,10 +28,11 @@ Return `τ` if `(σ, label, τ)` is in `A`, otherwise return nothing.
 function trace(::AbstractAutomaton{S,X}, label::X, state::S) where {S,X} end
 
 """
-	initial(A::AbstractAutomaton{S,X})
-Returns an initial `state::S` of `A`.
+	initial_states(A::AbstractAutomaton{S,X})
+Returns an `AbstractVector{S}` of the initial states of `A`.
 """
-function initial(::AbstractAutomaton) end
+function initial_states(::AbstractAutomaton) end
+
 
 """
     is_terminal(A::AbstractAutomaton{S,X}, label, σ)
@@ -53,6 +54,13 @@ The state will be detached and not connected to any other state in the state.
 It will not be added to the automaton.
 """
 function create_state(::AbstractAutomaton{S,X}) where {S,X} end
+
+
+"""
+	initial(A::AbstractAutomaton{S,X})
+Returns an initial `state::S` of `A`.
+"""
+initial(A::AbstractAutomaton{X,S}) where {X,S} = first(initial_states(A))
 
 """
 	trace(A::AbstractAutomaton{S,X}, w::AbstractVector{<:X} [, σ=initial(A)])
