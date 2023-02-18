@@ -1,0 +1,4 @@
+name = "CGT"
+uuid = "8ffc26fe-4850-4da6-88b7-ba2eccb3064f"
+authors = ["Jannis Weis <31143295+weisJ@users.noreply.github.com>"]
+version = "0.1.0"
