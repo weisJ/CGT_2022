@@ -12,7 +12,7 @@ function alphabet(::AbstractAutomaton) end
 	hasedge(A::AbstractAutomaton{S,X}, σ, label)
 Check if `A` contains an edge starting at `σ` labeled by `label`
 """
-function has_edge(::AbstractAutomaton{S,X},  label::X, state::S) where {S,X} end
+function has_edge(::AbstractAutomaton{S,X}, label::X, state::S) where {S,X} end
 
 """
     edges(A::AbstractAutomaton{S,X}, σ)
@@ -55,6 +55,18 @@ It will not be added to the automaton.
 """
 function create_state(::AbstractAutomaton{S,X}) where {S,X} end
 
+"""
+    add_state!(A::AbstractAutomaton{S,X}, state=create_state(A))
+Adds a new state to the automaton. The state will not be connected to any other state by
+default. If no state is passed a new state will be created.
+"""
+function add_state!(A::AbstractAutomaton{S,X}, state::S=create_state(A)) where {S,X} end
+
+"""
+add_edge!(::AbstractAutomaton{S,X}, source::S, label::X, target::S)
+Adds a new edge to the automaton given by `(source, label, target)`.
+"""
+function add_edge!(::AbstractAutomaton{S,X}, source::S, label::X, target::S) where {X,S} end
 
 """
 	initial(A::AbstractAutomaton{S,X})
