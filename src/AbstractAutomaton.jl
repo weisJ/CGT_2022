@@ -4,7 +4,7 @@ abstract type AbstractAutomaton{S<:AbstractState,X} end
 
 """
     alphabet(A::AbstractAutomaton{S,X})
-Returns the alphabet of `A` i.e. an `AbstractVector{X}` of all allowed letters.
+Returns the alphabet of `A` i.e. an `Alphabet{X}` of all allowed letters.
 """
 function alphabet(::AbstractAutomaton) end
 
@@ -12,7 +12,7 @@ function alphabet(::AbstractAutomaton) end
 	hasedge(A::AbstractAutomaton{S,X}, σ, label)
 Check if `A` contains an edge starting at `σ` labeled by `label`
 """
-function has_edge(::AbstractAutomaton{S,X}, label::X, state::S) where {S,X} end
+function has_edge(::AbstractAutomaton{S,X}, state::S, label::X) where {S,X} end
 
 """
     edges(A::AbstractAutomaton{S,X}, σ)
@@ -59,6 +59,7 @@ function create_state(::AbstractAutomaton{S,X}) where {S,X} end
     add_state!(A::AbstractAutomaton{S,X}, state=create_state(A))
 Adds a new state to the automaton. The state will not be connected to any other state by
 default. If no state is passed a new state will be created.
+The added state will be returned.
 """
 function add_state!(A::AbstractAutomaton{S,X}, state::S=create_state(A)) where {S,X} end
 

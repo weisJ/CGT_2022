@@ -1,5 +1,5 @@
 @testset "Automaton Basics" begin
-    X = [:a, :b]
+    X = CGT.Alphabet([:a, :b])
     A = CGT.Automaton(X)
 
     s1 = CGT.initial(A)
@@ -14,8 +14,8 @@
     @test CGT.has_edge(A, s1, :a)
     @test !CGT.has_edge(A, s1, :b)
 
-    @test CGT.trace(A, s2, :b) == s3
-    @test isnothing(CGT.trace(A, s3, :a))
-    @test isnothing(CGT.trace(A, s3, :b))
-    @test CGT.trace(A, s1, [:a,:b]) == s3
+    @test CGT.trace(A, :b, s2) == s3
+    @test isnothing(CGT.trace(A, :a, s3))
+    @test isnothing(CGT.trace(A, :b, s3))
+    @test CGT.trace(A, [:a, :b], s1) == (2, s3)
 end
