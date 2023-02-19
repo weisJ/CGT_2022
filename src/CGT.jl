@@ -8,5 +8,6 @@ include("Automaton.jl")
 include("AutomatonWrapper.jl")
 include("Complement.jl")
 include("Completion.jl")
+include("Accessible.jl")
 
 end
