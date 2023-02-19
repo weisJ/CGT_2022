@@ -1,3 +1,7 @@
+struct EmptyWord end
+const ϵ = EmptyWord()
+const Label = Union{X,EmptyWord} where {X}
+
 abstract type AbstractState end
 
 abstract type AbstractAutomaton{S<:AbstractState,X} end
@@ -12,7 +16,7 @@ function alphabet(::AbstractAutomaton) end
 	hasedge(A::AbstractAutomaton{S,X}, σ, label)
 Check if `A` contains an edge starting at `σ` labeled by `label`
 """
-function has_edge(::AbstractAutomaton{S,X}, state::S, label::X) where {S,X} end
+function has_edge(::AbstractAutomaton{S,X}, state::S, label::Label{X}) where {S,X} end
 
 """
     edges(A::AbstractAutomaton{S,X}, σ)
@@ -25,7 +29,7 @@ function edges(::AbstractAutomaton{S,X}, state::S) where {S,X} end
 	trace(A::AbstractAutomaton, label, σ)
 Return `τ` if `(σ, label, τ)` is in `A`, otherwise return nothing.
 """
-function trace(::AbstractAutomaton{S,X}, label::X, state::S) where {S,X} end
+function trace(::AbstractAutomaton{S,X}, label::Label{X}, state::S) where {S,X} end
 
 """
 	initial_states(A::AbstractAutomaton{S,X})
