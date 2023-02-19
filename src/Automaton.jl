@@ -21,11 +21,16 @@ mutable struct Automaton{X} <: AbstractAutomaton{State{X},X}
 end
 
 alphabet(A::Automaton{X}) where {X} = A.alphabet
-indexin(A::Alphabet{X}, x::Label{X}) where {X} = s == ϵ ? length(A)  + 1 : indexin(A, x)
+indexin(A::Alphabet{X}, x::Label{X}) where {X} = x == ϵ ? length(A) + 1 : indexin(A, x)
 
-has_edge(A::Automaton{X}, state::State, label::Label{X}) where {X} =
+has_edge(A::Automaton{X}, state::State{X}, label::Label{X}) where {X} =
     isassigned(state.transitions, indexin(alphabet(A), label))
-function trace(A::Automaton{X}, label::Label{X}, state::State) where {X}
+
+function edges(A::Automaton{X}, state::State{X}) where {X}
+    return ((l, trace(A, l, state)) for l ∈ letters_with_epsilon(alphabet(A)) if has_edge(A, state, l))
+end
+
+function trace(A::Automaton{X}, label::Label{X}, state::State{X}) where {X}
     has_edge(A, state, label) || return nothing
     state.transitions[indexin(alphabet(A), label)]
 end
@@ -42,7 +47,7 @@ Adds a new state to the automaton. The state will not be connected to any other 
 default. If no state is passed a new state will be created.
 The added state will be returned.
 """
-function add_state!(A::Automaton{X}, state::State{X} = create_state(A)) where {X}
+function add_state!(A::Automaton{X}, state::State{X}=create_state(A)) where {X}
     push!(A.states, state)
     return state
 end
@@ -61,7 +66,7 @@ end
 Mark the given state as being terminal i.e. accepting. By changing the `terminal``
 parameter to `false` one is also able to unmark the state.
 """
-function mark_terminal!(A::Automaton{X}, state::State{X}, terminal::Bool = true) where {X}
+function mark_terminal!(A::Automaton{X}, state::State{X}, terminal::Bool=true) where {X}
     if terminal
         push!(A.terminal_states, state)
     else
