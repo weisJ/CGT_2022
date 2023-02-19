@@ -56,9 +56,6 @@ end
 end
 
 @testset "Completion" begin
-    using CatViews
-    @info "" CatView(["1"], ["2"])
-
     X = CGT.Alphabet([:a, :b])
     A = CGT.Automaton(X)
 
@@ -75,10 +72,5 @@ end
     B = CGT.completion(A)
 
     @test CGT.alphabet(B) == X
-
-    for σ ∈ CGT.states(B)
-        for l ∈ X
-            @test CGT.has_edge(B, σ, l)
-        end
-    end
+    @test CGT.is_complete(B)
 end

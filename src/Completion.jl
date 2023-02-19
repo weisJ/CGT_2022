@@ -13,7 +13,8 @@ function initial_states(A::AutomatonCompletion)
     return states
 end
 
-has_edge(::AutomatonCompletion{S,X}, label::X, state::S) where {S,X} = true
+has_edge(A::AutomatonCompletion{S,X}, state::S, label::Label{X}) where {S,X} = label != ϵ || has_edge(A, label, state)
+
 function edges(A::AutomatonWrapper{S,X}, state::S) where {S,X}
     max_degree = length(alphabet(A))
     E = edges(wrappee(A), state)
@@ -40,4 +41,14 @@ end
 
 function completion(A::AbstractAutomaton{S,X}) where {S,X}
     return AutomatonCompletion(A)
+end
+
+function is_complete(A::AbstractAutomaton{S,X}) where {S,X}
+    for σ ∈ states(A)
+        for l ∈ alphabet(A)
+            l == ϵ && continue
+            has_edge(A, σ, l) || return false
+        end
+    end
+    return true
 end
