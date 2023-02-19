@@ -1,9 +1,12 @@
 mutable struct State{X} <: AbstractState
     transitions::Vector{State{X}}
+    id::String
 
     State(A::T) where {X,T<:AbstractAutomaton{State{X},X}} =
-        new{X}(Vector{State{X}}(undef, length(alphabet(A)) + 1))
+        new{X}(Vector{State{X}}(undef, length(alphabet(A)) + 1), "s$(_safe_state_count(A) + 1)")
 end
+
+Base.show(io::IO, state::State) = print(io, "State($(state.id))")
 
 mutable struct Automaton{X} <: AbstractAutomaton{State{X},X}
     alphabet::Alphabet{X}
@@ -18,6 +21,11 @@ mutable struct Automaton{X} <: AbstractAutomaton{State{X},X}
         A.terminal_states = Set{State{X}}()
         return A
     end
+end
+
+function _safe_state_count(A::Automaton)
+    !isdefined(A, :states) && return 0
+    return length(A.states)
 end
 
 alphabet(A::Automaton{X}) where {X} = A.alphabet
