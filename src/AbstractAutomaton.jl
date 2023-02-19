@@ -33,10 +33,15 @@ function trace(::AbstractAutomaton{S,X}, label::Label{X}, state::S) where {S,X} 
 
 """
 	initial_states(A::AbstractAutomaton{S,X})
-Returns an `AbstractVector{S}` of the initial states of `A`.
+Returns a collection of the initial states of `A`.
 """
 function initial_states(::AbstractAutomaton) end
 
+"""
+	initial_states(A::AbstractAutomaton{S,X})
+Returns a collection of the terminal states of `A`.
+"""
+function terminal_states(::AbstractAutomaton) end
 
 """
     is_terminal(A::AbstractAutomaton{S,X}, label, σ)

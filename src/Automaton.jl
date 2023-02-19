@@ -8,13 +8,13 @@ end
 mutable struct Automaton{X} <: AbstractAutomaton{State{X},X}
     alphabet::Alphabet{X}
     states::Vector{State{X}}
-    initial::Vector{State{X}}
+    initial_states::Vector{State{X}}
     terminal_states::Set{State{X}}
 
     function Automaton(alphabet::Alphabet{X}) where {X}
         A = new{X}(alphabet)
-        A.initial = [create_state(A)]
-        A.states = copy(A.initial)
+        A.initial_states = [create_state(A)]
+        A.states = copy(A.initial_states)
         A.terminal_states = Set{State{X}}()
         return A
     end
@@ -35,7 +35,8 @@ function trace(A::Automaton{X}, label::Label{X}, state::State{X}) where {X}
     state.transitions[indexin(alphabet(A), label)]
 end
 
-initial_states(A::Automaton{X}) where {X} = A.initial
+initial_states(A::Automaton{X}) where {X} = A.initial_states
+terminal_states(A::Automaton{X}) where {X} = A.terminal_states
 is_terminal(A::Automaton{X}, state::State{X}) where {X} = state ∈ A.terminal_states
 states(A::Automaton{X}) where {X} = A.states
 
