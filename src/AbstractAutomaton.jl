@@ -55,6 +55,13 @@ Returns an `AbstractVector{S}` of all states in `A`.
 """
 function states(::AbstractAutomaton{S,X}) where {S,X} end
 
+"""
+    state_iterator(A::AbstractAutomaton{S,X})
+Returns a `StateIterator{S}` suitable which can be used to iterate over all
+states of the automaton `A`.
+"""
+function state_iterator(::AbstractAutomaton{S,X}) where {S,X} end
+
 
 """
     create_state(A::AbstractAutomaton{S,X})

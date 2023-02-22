@@ -11,3 +11,7 @@ initial_states(A::AutomatonWrapper{S,X}) where {S,X} = initial_states(wrappee(A)
 terminal_states(A::AutomatonWrapper{S,X}) where {S,X} = terminal_states(wrappee(A))
 is_terminal(A::AutomatonWrapper{S,X}, state::S) where {S,X} = is_terminal(wrappee(A), state)
 create_state(A::AutomatonWrapper{S,X}) where {S,X} = create_state(wrappee(A))
+state_iterator(A::AutomatonWrapper{S,X}) where {S,X} = state_iterator(wrappee(A))
+
+epoch(A::AutomatonWrapper{State{X},X}) where {X} = epoch(wrappee(A))
+advance_epoch!(A::AutomatonWrapper{State{X},X}) where {X} = advance_epoch!(wrappee(A))

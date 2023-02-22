@@ -1,24 +1,16 @@
-mutable struct State{X} <: AbstractState
-    transitions::Vector{State{X}}
-    id::String
-
-    State(A::T) where {X,T<:AbstractAutomaton{State{X},X}} =
-        new{X}(Vector{State{X}}(undef, length(alphabet(A)) + 1), "s$(_safe_state_count(A) + 1)")
-end
-
-Base.show(io::IO, state::State) = print(io, "State($(state.id))")
-
 mutable struct Automaton{X} <: AbstractAutomaton{State{X},X}
     alphabet::Alphabet{X}
     states::Vector{State{X}}
     initial_states::Vector{State{X}}
     terminal_states::Set{State{X}}
+    epoch::Int
 
     function Automaton(alphabet::Alphabet{X}) where {X}
         A = new{X}(alphabet)
         A.initial_states = [create_state(A)]
         A.states = copy(A.initial_states)
         A.terminal_states = Set{State{X}}()
+        A.epoch = 0
         return A
     end
 end
@@ -49,6 +41,10 @@ is_terminal(A::Automaton{X}, state::State{X}) where {X} = state ∈ A.terminal_s
 states(A::Automaton{X}) where {X} = A.states
 
 create_state(A::Automaton{X}) where {X} = State(A)
+
+state_iterator(A::Automaton{X}) where {X} = EpochStateIterator(A)
+epoch(A::Automaton{X}) where {X} = A.epoch
+advance_epoch!(A::Automaton{X}) where {X} = A.epoch += 1
 
 """
     add_state!(A::AbstractAutomaton{S,X}, state=create_state(A))
