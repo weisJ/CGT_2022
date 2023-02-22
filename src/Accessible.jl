@@ -1,14 +1,18 @@
-function accessible_states(A::AbstractAutomaton{S,X}) where {S,X}
-    accessible = Set{S}()
+function accessible_states(A::AbstractAutomaton{S,X}, α::S; accumulator=Vector{S}()) where {S,X}
+    traverse(A, α;
+        enter=s::S -> begin
+            push!(accumulator, s)
+            return Continue
+        end,
+        exit=s::S -> Continue)
+    return accumulator
+end
+
+function accessible_states(A::AbstractAutomaton{S,X}; accumulator=Vector{S}()) where {S,X}
     for α ∈ initial_states(A)
-        traverse(state_iterator(A), α;
-            enter=s::S -> begin
-                push!(accessible, s)
-                return Continue
-            end,
-            exit=s::S -> Continue)
+        accessible_states(A, α; accumulator)
     end
-    return accessible
+    return accumulator
 end
 
 _mark_coacessible!(it::StateIterator{S}, state::S, coaccessible::Bool) where {S} =
@@ -18,13 +22,12 @@ _is_definitiely_coacessible(it::StateIterator{S}, state::S) where {S} =
 _is_definitiely_not_coacessible(it::StateIterator{S}, state::S) where {S} =
     get_mark(it, state) == false
 
-function coaccessible_states(A::AbstractAutomaton{S,X}, states=states(A)) where {S,X}
-    coaccessible = Set{S}()
+function coaccessible_states(A::AbstractAutomaton{S,X}, states=states(A); accumulator=Vector{S}()) where {S,X}
     terminal = convert(Set{S}, terminal_states(A))
     it = state_iterator(A)
     for σ ∈ states
         path = S[]
-        traverse(it, σ;
+        traverse(A, σ, it;
             enter=s::S -> begin
                 # We encountered a state, which is coaccessible, hence we don't need
                 # to explore any further.
@@ -52,13 +55,16 @@ function coaccessible_states(A::AbstractAutomaton{S,X}, states=states(A)) where 
                 end
             end)
         if _is_definitiely_coacessible(it, σ)
-            push!(coaccessible, σ)
+            push!(accumulator, σ)
         end
     end
-    return coaccessible
+    return accumulator
 end
 
-function trim_states(A::AbstractAutomaton{S,X}) where {S,X}
-    accessible = accessible_states(A)
-    return coaccessible_states(A, accessible)
+function trim_states(A::AbstractAutomaton{S,X}; accumulator=Vector{S}()) where {S,X}
+    return coaccessible_states(A, accessible_states(A); accumulator)
+end
+
+function trimmification(A::AbstractAutomaton{S,X}) where {S,X}
+    return SubAutomaton(A, trim_states(A; accumulator=Set{S}()), false)
 end

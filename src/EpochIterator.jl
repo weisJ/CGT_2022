@@ -2,11 +2,10 @@ function epoch(::AbstractAutomaton{State{X},X}) where {X} end
 function advance_epoch!(::AbstractAutomaton{State{X},X}) where {X} end
 
 struct EpochStateIterator{X} <: StateIterator{State{X}}
-    A::AbstractAutomaton{State{X},X}
     epoch::Int
 
     EpochStateIterator(A::AbstractAutomaton{State{X},X}) where {X} =
-        new{X}(A, advance_epoch!(A))
+        new{X}(advance_epoch!(A))
 end
 
 const SeenFlag = 1
@@ -36,18 +35,20 @@ function get_mark(it::EpochStateIterator{X}, state::State{X}) where {X}
 end
 
 function do_traverse(
-    it::EpochStateIterator{X}, α::State{X},
+    A::AbstractAutomaton{S,X},
+    α::State{X},
+    it::EpochStateIterator{X},
     enter::Function, exit::Function,
     parent_state_was_seen::Bool
-)::IterationDecision where {X}
+)::IterationDecision where {S,X}
     state_seen = get_flag(it, α, SeenFlag) == true
     set_flag!(it, α, SeenFlag, true)
 
     enter(α) == Break && return Break
 
     if !parent_state_was_seen
-        for (_, σ) ∈ edges(it.A, α)
-            do_traverse(it, σ, enter, exit, state_seen) == Break && return Break
+        for (_, σ) ∈ edges(A, α)
+            do_traverse(A, σ, it, enter, exit, state_seen) == Break && return Break
         end
     end
 
@@ -55,6 +56,12 @@ function do_traverse(
     return Continue
 end
 
-function traverse(it::EpochStateIterator{X}, α::State{X}; enter::Function, exit::Function) where {X}
-    do_traverse(it, α, enter, exit, false)
+function traverse(
+    A::AbstractAutomaton{S,X},
+    α::State{X},
+    it::EpochStateIterator{X};
+    enter::Function,
+    exit::Function
+) where {S,X}
+    do_traverse(A, α, it, enter, exit, false)
 end

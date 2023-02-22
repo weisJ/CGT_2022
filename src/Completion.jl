@@ -15,7 +15,7 @@ end
 
 has_edge(A::AutomatonCompletion{S,X}, state::S, label::Label{X}) where {S,X} = label != ϵ || has_edge(A, label, state)
 
-function edges(A::AutomatonWrapper{S,X}, state::S) where {S,X}
+function edges(A::AutomatonCompletion{S,X}, state::S) where {S,X}
     max_degree = length(alphabet(A))
     E = edges(wrappee(A), state)
     if length(E) == max_degree
@@ -25,7 +25,7 @@ function edges(A::AutomatonWrapper{S,X}, state::S) where {S,X}
     end
 end
 
-function states(A::AutomatonWrapper{S,X}) where {S,X}
+function states(A::AutomatonCompletion{S,X}) where {S,X}
     return CatView(states(wrappee(A)), [A.error_state])
 end
 

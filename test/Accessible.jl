@@ -41,5 +41,34 @@
     @test !(s3 ∈ trim)
     @test s4 ∈ trim
     @test !(s5 ∈ trim)
+end
 
+@testset "Trimmification" begin
+    X = CGT.Alphabet([:a, :b])
+    A = CGT.Automaton(X)
+
+    s1 = CGT.initial(A)
+    s2 = CGT.add_state!(A)
+    s3 = CGT.add_state!(A)
+    s4 = CGT.add_state!(A)
+    s5 = CGT.add_state!(A)
+
+    CGT.add_edge!(A, s1, :a, s2)
+    CGT.add_edge!(A, s1, :b, s3)
+    CGT.add_edge!(A, s2, :b, s3)
+    CGT.add_edge!(A, s2, :a, s4)
+    CGT.add_edge!(A, s4, :a, s2)
+    CGT.add_edge!(A, s5, :a, s4)
+
+    CGT.mark_terminal!(A, s5)
+    CGT.mark_terminal!(A, s2)
+
+    B = CGT.trimmification(A)
+
+    collected_states = Set(CGT.accessible_states(B, s1))
+    real_states = Set(CGT.states(B))
+    trim_states = Set(CGT.trim_states(A))
+
+    @test trim_states == real_states
+    @test collected_states == real_states
 end
