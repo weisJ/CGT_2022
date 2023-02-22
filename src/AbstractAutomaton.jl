@@ -20,10 +20,18 @@ function has_edge(::AbstractAutomaton{S,X}, state::S, label::Label{X}) where {S,
 
 """
     edges(A::AbstractAutomaton{S,X}, σ)
-Returns all edges in `A`, which start at `σ`. Ad edge is represented by
+Returns all edges in `A`, which start at `σ`. An edge is represented by
 a pair `(l,τ)` where `l` is the label and `τ` the target of the edge.
 """
-function edges(::AbstractAutomaton{S,X}, state::S) where {S,X} end
+edges(A::AbstractAutomaton{S,X}, state::S) where {S,X} =
+    return Iterators.flatten(((l, τ) for τ ∈ E) for (l, E) ∈ edge_lists(A, state))
+
+"""
+    edge_lists(A::AbstractAutomaton{S,X}, σ)
+Returns all edges in `A`, which start at `σ`. For a given label a pair `(l,E)`
+is returned, where `E` is the list of edges with label `l` outgoing from `σ`.
+"""
+function edge_lists(::AbstractAutomaton{S,X}, state::S) where {S,X} end
 
 """
 	trace(A::AbstractAutomaton, label, σ)

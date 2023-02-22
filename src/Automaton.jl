@@ -23,16 +23,24 @@ end
 alphabet(A::Automaton{X}) where {X} = A.alphabet
 indexin(A::Alphabet{X}, x::Label{X}) where {X} = x == ϵ ? length(A) + 1 : indexin(A, x)
 
-has_edge(A::Automaton{X}, state::State{X}, label::Label{X}) where {X} =
-    isassigned(state.transitions, indexin(alphabet(A), label))
+function letters_with_epsilon(A::Alphabet{X}) where {X}
+    eps::Vector{Label{X}} = [ϵ]
+    return CatView(A.letters, eps)
+end
 
-function edges(A::Automaton{X}, state::State{X}) where {X}
-    return ((l, trace(A, l, state)) for l ∈ letters_with_epsilon(alphabet(A)) if has_edge(A, state, l))
+function has_edge(A::Automaton{X}, state::State{X}, label::Label{X}) where {X}
+    index = indexin(alphabet(A), label)
+    return haskey(state.transitions, index) && !isempty(index)
+end
+
+function edge_lists(A::Automaton{X}, state::State{X}) where {X}
+    letters = letters_with_epsilon(alphabet(A))
+    return ((letters[l], E) for (l,E) ∈ state.transitions)
 end
 
 function trace(A::Automaton{X}, label::Label{X}, state::State{X}) where {X}
     has_edge(A, state, label) || return nothing
-    state.transitions[indexin(alphabet(A), label)]
+    return first(state.transitions[indexin(alphabet(A), label)])
 end
 
 initial_states(A::Automaton{X}) where {X} = A.initial_states
@@ -62,8 +70,7 @@ end
 Adds a new edge to the automaton given by `(source, label, target)`.
 """
 function add_edge!(A::Automaton{X}, source::State{X}, label::Label{X}, target::State{X}) where {X}
-    @assert !has_edge(A, source, label)
-    source.transitions[indexin(alphabet(A), label)] = target
+    push!(source.transitions[indexin(alphabet(A), label)], target)
 end
 
 """

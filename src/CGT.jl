@@ -2,6 +2,7 @@ module CGT
 
 using CatViews
 using StaticArrays
+using DataStructures
 
 include("Alphabet.jl")
 include("AbstractAutomaton.jl")
