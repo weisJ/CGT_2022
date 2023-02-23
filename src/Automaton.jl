@@ -1,4 +1,4 @@
-mutable struct Automaton{X} <: AbstractAutomaton{State{X},X}
+mutable struct Automaton{X} <: EpochStateAutomaton{State{X},X}
     alphabet::Alphabet{X}
     states::Vector{State{X}}
     initial_states::Vector{State{X}}

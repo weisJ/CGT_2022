@@ -1,29 +1,58 @@
-function epoch(::AbstractAutomaton{State{X},X}) where {X} end
-function advance_epoch!(::AbstractAutomaton{State{X},X}) where {X} end
 
-struct EpochStateIterator{X} <: StateIterator{State{X}}
-    epoch::Int
+mutable struct EpochFlags
+    flags::BitSet
+    epochs::MVector{2,Int}
 
-    EpochStateIterator(A::AbstractAutomaton{State{X},X}) where {X} =
-        new{X}(advance_epoch!(A))
+    EpochFlags() = new(BitSet(), @MVector [-1, -1])
 end
 
-set_flag!(it::EpochStateIterator{X}, state::State{X}, flag::Int, value::Bool) where {X} =
-    set_flag!(state.epoch, it.epoch, flag, value)
+const SeenFlag = 1
+const MarkFlag = 2
 
-get_flag(it::EpochStateIterator{X}, state::State{X}, flag::Int) where {X} =
-    get_flag(state.epoch, it.epoch, flag)
+function set_flag!(epoch::EpochFlags, current_epoch::Int, flag::Int, value::Bool)
+    epoch.epochs[flag] = current_epoch
+    if value
+        push!(epoch.flags, flag)
+    else
+        delete!(epoch.flags, flag)
+    end
+end
 
-set_mark!(it::EpochStateIterator{X}, state::State{X}, flag::Bool) where {X} =
+function get_flag(epoch::EpochFlags, current_epoch::Int, flag::Int)
+    epoch.epochs[flag] == current_epoch || return nothing
+    return flag ∈ epoch.flags
+end
+
+abstract type EpochState <: AbstractState end
+function epoch_flags(::EpochState)::EpochFlags end
+
+abstract type EpochStateAutomaton{S<:EpochState,X} <: AbstractAutomaton{S,X} end
+function epoch(::EpochStateAutomaton{S,X}) where {S,X} end
+function advance_epoch!(::EpochStateAutomaton{S,X}) where {S,X} end
+
+struct EpochStateIterator{S,X} <: StateIterator{S}
+    epoch::Int
+
+    EpochStateIterator(A::EpochStateAutomaton{S,X}) where {S,X} =
+        new{S,X}(advance_epoch!(A))
+end
+
+set_flag!(it::EpochStateIterator{S,X}, state::EpochState, flag::Int, value::Bool) where {S,X} =
+    set_flag!(epoch_flags(state), it.epoch, flag, value)
+
+get_flag(it::EpochStateIterator{S,X}, state::EpochState, flag::Int) where {S,X} =
+    get_flag(epoch_flags(state), it.epoch, flag)
+
+set_mark!(it::EpochStateIterator{S,X}, state::EpochState, flag::Bool) where {S,X} =
     set_flag!(it, state, MarkFlag, flag)
 
-get_mark(it::EpochStateIterator{X}, state::State{X}) where {X} =
-    return get_flag(it, state, MarkFlag)
+get_mark(it::EpochStateIterator{S,X}, state::EpochState) where {S,X} =
+    get_flag(it, state, MarkFlag)
 
 function do_traverse(
     A::AbstractAutomaton{S,X},
-    α::State{X},
-    it::EpochStateIterator{X},
+    α::S,
+    it::EpochStateIterator{S,X},
     enter::Function, exit::Function,
     parent_state_was_seen::Bool
 )::IterationDecision where {S,X}
@@ -44,8 +73,8 @@ end
 
 function traverse(
     A::AbstractAutomaton{S,X},
-    α::State{X},
-    it::EpochStateIterator{X};
+    α::S,
+    it::EpochStateIterator{S,X};
     enter::Function,
     exit::Function
 ) where {S,X}

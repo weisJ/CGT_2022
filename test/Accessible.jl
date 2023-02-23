@@ -1,4 +1,4 @@
-@testset "Accssible states" begin
+@testset "(Co)accssible states" begin
     X = CGT.Alphabet([:a, :b])
     A = CGT.Automaton(X)
 
