@@ -8,31 +8,17 @@ struct EpochStateIterator{X} <: StateIterator{State{X}}
         new{X}(advance_epoch!(A))
 end
 
-const SeenFlag = 1
-const MarkFlag = 2
+set_flag!(it::EpochStateIterator{X}, state::State{X}, flag::Int, value::Bool) where {X} =
+    set_flag!(state.epoch, it.epoch, flag, value)
 
-function set_flag!(it::EpochStateIterator{X}, state::State{X}, flag::Int, value::Bool) where {X}
-    state.epochs[flag] = it.epoch
-    if value
-        push!(state.flags, flag)
-    else
-        delete!(state.flags, flag)
-    end
-end
+get_flag(it::EpochStateIterator{X}, state::State{X}, flag::Int) where {X} =
+    get_flag(state.epoch, it.epoch, flag)
 
-function get_flag(it::EpochStateIterator{X}, state::State{X}, flag::Int) where {X}
-    state.epochs[flag] == it.epoch || return nothing
-    return flag ∈ state.flags
-end
-
-
-function set_mark!(it::EpochStateIterator{X}, state::State{X}, flag::Bool) where {X}
+set_mark!(it::EpochStateIterator{X}, state::State{X}, flag::Bool) where {X} =
     set_flag!(it, state, MarkFlag, flag)
-end
 
-function get_mark(it::EpochStateIterator{X}, state::State{X}) where {X}
+get_mark(it::EpochStateIterator{X}, state::State{X}) where {X} =
     return get_flag(it, state, MarkFlag)
-end
 
 function do_traverse(
     A::AbstractAutomaton{S,X},
