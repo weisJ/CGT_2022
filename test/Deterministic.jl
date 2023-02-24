@@ -35,6 +35,13 @@
     testClosure([q2], [q2])
     testClosure([q0, q4], [q0, q3, q4])
 
+    states_set = Set(states)
+    for s ∈ states
+        for (_,σ) ∈ CGT.edges(A, s)
+            @test σ ∈ states_set
+        end
+    end
+
     B = CGT.SubsetConstructionAutomaton(A)
 
     @test length(CGT.initial_states(A)) == 1

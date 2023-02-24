@@ -47,17 +47,22 @@ function _subset_construction(
     B::SubsetConstructionAutomaton{S,X},
     inner_states::Vector{S}
 ) where {S,X}
-    states = OrderedSet{MultiState{X}}()
+    states = OrderedDict{MultiState{X},MultiState{X}}()
 
     add = s::MultiState -> add_state!(A, B, inner_states, states, s)
 
     add(B.initial_state)
 
-    for T ∈ states
+    for (_, T) ∈ states
         push!(B.states, T)
 
         for (l, σ) ∈ instructions(A, inner_states, T)
             U = epsilon_closure(A, inner_states, σ)
+            # Make sure we use the appropriate object. Otherwise we link to incorrect
+            # (speak dangling) states.
+            if haskey(states, U)
+                U = states[U]
+            end
             T.transitions[l] = U
             add(U)
         end
@@ -68,11 +73,11 @@ function add_state!(
     A::AbstractAutomaton{S,X},
     B::SubsetConstructionAutomaton{S,X},
     inner_states::Vector{S},
-    states::OrderedSet{MultiState{X}},
+    states::OrderedDict{MultiState{X},MultiState{X}},
     state::MultiState
 ) where {S,X}
-    state ∈ states && return
-    push!(states, state)
+    haskey(states, state) && return
+    states[state] = state
     for s ∈ contained_states(inner_states, state)
         if is_terminal(A, s)
             push!(B.terminal_states, state)
