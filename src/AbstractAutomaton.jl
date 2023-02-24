@@ -92,6 +92,11 @@ end
 
 
 function accepts(A::AbstractAutomaton{S,X}, w::AbstractVector{X}) where {S,X}
-    i, σ = trace(A, w)
-    return i == length(w) && is_terminal(A, σ)
+    for α ∈ initial_states(A)
+        i, σ = trace(A, w, α)
+        if i == length(w) && is_terminal(A, σ)
+            return true
+        end
+    end
+    return false
 end
