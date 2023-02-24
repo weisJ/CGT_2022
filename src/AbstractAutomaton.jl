@@ -89,3 +89,9 @@ function trace(A::AbstractAutomaton{S,X}, w::AbstractVector{X}, σ=initial(A)::S
     end
     return length(w), σ
 end
+
+
+function accepts(A::AbstractAutomaton{S,X}, w::AbstractVector{X}) where {S,X}
+    i, σ = trace(A, w)
+    return i == length(w) && is_terminal(A, σ)
+end

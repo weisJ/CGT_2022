@@ -1,12 +1,12 @@
 mutable struct State{X} <: EpochState
     transitions::DefaultDict{Int,Vector{State{X}}}
-    id::String
+    id::Int
     flags::EpochFlags
 
     State(A::T) where {X,T<:AbstractAutomaton{State{X},X}} =
         new{X}(
             DefaultDict{Int,Vector{State{X}}}(() -> Vector{State{X}}()),
-            "s$(_safe_state_count(A) + 1)",
+            _safe_state_count(A) + 1,
             EpochFlags())
 end
 

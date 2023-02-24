@@ -17,5 +17,6 @@ include("Completion.jl")
 include("SubAutomaton.jl")
 include("Accessible.jl")
 include("Deterministic.jl")
+include("Union.jl")
 
 end

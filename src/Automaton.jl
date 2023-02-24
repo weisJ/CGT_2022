@@ -64,7 +64,7 @@ end
 Adds a new edge to the automaton given by `(source, label, target)`.
 """
 function add_edge!(A::Automaton{X}, source::State{X}, label::Label{X}, target::State{X}) where {X}
-    @assert !has_edge(A, source, label) || !(target ∈ edge_list(A, sourcel, label))
+    @assert !has_edge(A, source, label) || !(target ∈ edge_list(A, source, label))
     push!(source.transitions[indexin(alphabet(A), label)], target)
 end
 
