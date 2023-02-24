@@ -23,7 +23,7 @@ _is_definitiely_not_coacessible(it::StateIterator{S}, A::AbstractAutomaton{S,X},
 
 function coaccessible_states(A::AbstractAutomaton{S,X}, states=states(A); accumulator=Vector{S}()) where {S,X}
     terminal = convert(Set{S}, terminal_states(A))
-    it = state_iterator(A)
+    it = state_iterator(A; complete_loops=true)
     for σ ∈ states
         path = S[]
         traverse(A, σ, it;

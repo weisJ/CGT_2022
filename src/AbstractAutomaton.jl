@@ -61,11 +61,12 @@ Returns an `AbstractVector{S}` of all states in `A`.
 function states(::AbstractAutomaton{S,X}) where {S,X} end
 
 """
-    state_iterator(A::AbstractAutomaton{S,X})
+    state_iterator(A::AbstractAutomaton{S,X}, complete_loops::Bool=false)
 Returns a `StateIterator{S}` suitable which can be used to iterate over all
-states of the automaton `A`.
+states of the automaton `A`. If `complete_loops` is true the iterator will complete
+all loops once by entering the initial state again.
 """
-function state_iterator(::AbstractAutomaton{S,X}) where {S,X} end
+function state_iterator(::AbstractAutomaton{S,X}; complete_loops::Bool=false) where {S,X} end
 
 """
 	initial(A::AbstractAutomaton{S,X})

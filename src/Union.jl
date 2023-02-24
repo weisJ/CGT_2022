@@ -129,5 +129,5 @@ function traverse(
     end
 end
 
-state_iterator(A::UnionAutomaton{S1,S2,X}) where {S1,S2,X} =
-    UnionStateIterator(state_iterator(A.A), state_iterator(A.B))
+state_iterator(A::UnionAutomaton{S1,S2,X}; complete_loops::Bool=false) where {S1,S2,X} =
+    UnionStateIterator(state_iterator(A.A; complete_loops), state_iterator(A.B; complete_loops))

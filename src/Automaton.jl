@@ -44,7 +44,7 @@ states(A::Automaton{X}) where {X} = A.states
 
 create_state(A::Automaton{X}) where {X} = State(A)
 
-state_iterator(A::Automaton{X}) where {X} = EpochStateIterator(A)
+state_iterator(A::Automaton{X}; complete_loops::Bool=false) where {X} = EpochStateIterator(A, complete_loops)
 epoch(A::Automaton{X}) where {X} = A.epoch
 advance_epoch!(A::Automaton{X}) where {X} = A.epoch += 1
 

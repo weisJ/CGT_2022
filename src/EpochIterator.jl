@@ -32,9 +32,10 @@ function advance_epoch!(::EpochStateAutomaton{S,X}) where {S,X} end
 
 struct EpochStateIterator{S,X} <: StateIterator{S}
     epoch::Int
+    complete_loops::Bool
 
-    EpochStateIterator(A::EpochStateAutomaton{S,X}) where {S,X} =
-        new{S,X}(advance_epoch!(A))
+    EpochStateIterator(A::EpochStateAutomaton{S,X}, complete_loops::Bool) where {S,X} =
+        new{S,X}(advance_epoch!(A), complete_loops)
 end
 
 set_flag!(it::EpochStateIterator{S,X}, state::EpochState, flag::Int, value::Bool) where {S,X} =
@@ -57,6 +58,8 @@ function do_traverse(
     parent_state_was_seen::Bool
 )::IterationDecision where {S,X}
     state_seen = get_flag(it, α, SeenFlag) == true
+    state_seen && !it.complete_loops && return Continue
+
     set_flag!(it, α, SeenFlag, true)
 
     enter(α) == Break && return Break
