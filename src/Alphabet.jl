@@ -11,9 +11,20 @@ struct Alphabet{X}
     end
 end
 
+struct EmptyWord end
+const ϵ = EmptyWord()
+const Label = Union{X,EmptyWord} where {X}
+
 letters(A::Alphabet) = A.letters
 indexin(A::Alphabet{X}, x::X) where {X} = A.indices[x]
+indexin(A::Alphabet{X}, x::Label{X}) where {X} = x == ϵ ? length(A) + 1 : indexin(A, x)
+
 Base.length(A::Alphabet) = length(A.letters)
 
 Base.iterate(A::Alphabet) = iterate(A.letters)
 Base.iterate(A::Alphabet, state) = iterate(A.letters, state)
+
+function letters_with_epsilon(A::Alphabet{X}) where {X}
+    eps::Vector{Label{X}} = [ϵ]
+    return CatView(A.letters, eps)
+end

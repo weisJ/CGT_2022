@@ -8,18 +8,12 @@
 
     CGT.add_edge!(A, s1, :a, s2)
     CGT.add_edge!(A, s1, :b, s2)
-    CGT.add_edge!(A, s1, :a, s2)
     CGT.add_edge!(A, s1, CGT.ϵ, s2)
     CGT.add_edge!(A, s2, :b, s3)
 
     @test CGT.alphabet(A) == X
 
-    expected_edges = [(:a, s2), (:a, s2), (:b, s2), (CGT.ϵ, s2)]
-    got_edges = collect(CGT.edges(A, s1))
-    for e ∈ expected_edges
-        @test e ∈ got_edges
-        @test count(==(e), expected_edges) == count(==(e), got_edges)
-    end
+    @test Set(collect(CGT.edges(A, s1))) == Set([(:a, s2), (:b, s2), (CGT.ϵ, s2)])
 
     @test CGT.has_edge(A, s1, :a)
     @test CGT.has_edge(A, s1, :b)

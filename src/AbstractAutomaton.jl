@@ -1,10 +1,4 @@
-struct EmptyWord end
-const ϵ = EmptyWord()
-const Label = Union{X,EmptyWord} where {X}
-
-abstract type AbstractState end
-
-abstract type AbstractAutomaton{S<:AbstractState,X} end
+abstract type AbstractAutomaton{S,X} end
 
 """
     alphabet(A::AbstractAutomaton{S,X})
@@ -23,15 +17,18 @@ function has_edge(::AbstractAutomaton{S,X}, state::S, label::Label{X}) where {S,
 Returns all edges in `A`, which start at `σ`. An edge is represented by
 a pair `(l,τ)` where `l` is the label and `τ` the target of the edge.
 """
-edges(A::AbstractAutomaton{S,X}, state::S) where {S,X} =
-    Iterators.flatten(((l, τ) for τ ∈ E) for (l, E) ∈ edge_lists(A, state))
+function edges(A::AbstractAutomaton{S,X}, state::S) where {S,X}
+    non_empty_edges = Iterators.filter(
+        E -> !isnothing(E[2]),
+        ((l, edge_list(A, state, l)) for l ∈ letters_with_epsilon(alphabet(A))))
+    return Iterators.flatten(((l, τ) for τ ∈ E) for (l, E) ∈ non_empty_edges)
+end
 
 """
-    edge_lists(A::AbstractAutomaton{S,X}, σ)
-Returns all edges in `A`, which start at `σ`. For a given label a pair `(l,E)`
-is returned, where `E` is the list of edges with label `l` outgoing from `σ`.
+    edge_list(A::AbstractAutomaton{S,X}, σ, l)
+Returns all edges in `A`, which start at `σ` with label `l`.
 """
-function edge_lists(::AbstractAutomaton{S,X}, state::S) where {S,X} end
+function edge_list(::AbstractAutomaton{S,X}, state::S, l::Label{X}) where {S,X} end
 
 """
 	trace(A::AbstractAutomaton, label, σ)
@@ -69,15 +66,6 @@ Returns a `StateIterator{S}` suitable which can be used to iterate over all
 states of the automaton `A`.
 """
 function state_iterator(::AbstractAutomaton{S,X}) where {S,X} end
-
-
-"""
-    create_state(A::AbstractAutomaton{S,X})
-Creates a new state suitable for the automaton `A` i.e. of type `S`.
-The state will be detached and not connected to any other state in the state.
-It will not be added to the automaton.
-"""
-function create_state(::AbstractAutomaton{S,X}) where {S,X} end
 
 """
 	initial(A::AbstractAutomaton{S,X})

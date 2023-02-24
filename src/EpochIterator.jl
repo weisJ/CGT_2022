@@ -23,7 +23,7 @@ function get_flag(epoch::EpochFlags, current_epoch::Int, flag::Int)
     return flag ∈ epoch.flags
 end
 
-abstract type EpochState <: AbstractState end
+abstract type EpochState end
 function epoch_flags(::EpochState)::EpochFlags end
 
 abstract type EpochStateAutomaton{S<:EpochState,X} <: AbstractAutomaton{S,X} end
