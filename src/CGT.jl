@@ -3,6 +3,7 @@ module CGT
 using CatViews
 using StaticArrays
 using DataStructures
+using OrderedCollections
 
 include("Alphabet.jl")
 include("AbstractAutomaton.jl")
@@ -15,5 +16,6 @@ include("Complement.jl")
 include("Completion.jl")
 include("SubAutomaton.jl")
 include("Accessible.jl")
+include("Deterministic.jl")
 
 end

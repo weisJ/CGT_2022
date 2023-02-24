@@ -3,8 +3,7 @@ function accessible_states(A::AbstractAutomaton{S,X}, α::S; accumulator=Vector{
         enter=s::S -> begin
             push!(accumulator, s)
             return Continue
-        end,
-        exit=s::S -> Continue)
+        end)
     return accumulator
 end
 
@@ -15,12 +14,12 @@ function accessible_states(A::AbstractAutomaton{S,X}; accumulator=Vector{S}()) w
     return accumulator
 end
 
-_mark_coacessible!(it::StateIterator{S}, state::S, coaccessible::Bool) where {S} =
-    set_mark!(it, state, coaccessible)
-_is_definitiely_coacessible(it::StateIterator{S}, state::S) where {S} =
-    get_mark(it, state) == true
-_is_definitiely_not_coacessible(it::StateIterator{S}, state::S) where {S} =
-    get_mark(it, state) == false
+_mark_coacessible!(it::StateIterator{S}, A::AbstractAutomaton{S,X}, state::S, coaccessible::Bool) where {S,X} =
+    set_mark!(it, A, state, coaccessible)
+_is_definitiely_coacessible(it::StateIterator{S}, A::AbstractAutomaton{S,X}, state::S) where {S,X} =
+    get_mark(it, A, state) == true
+_is_definitiely_not_coacessible(it::StateIterator{S}, A::AbstractAutomaton{S,X}, state::S) where {S,X} =
+    get_mark(it, A, state) == false
 
 function coaccessible_states(A::AbstractAutomaton{S,X}, states=states(A); accumulator=Vector{S}()) where {S,X}
     terminal = convert(Set{S}, terminal_states(A))
@@ -31,10 +30,10 @@ function coaccessible_states(A::AbstractAutomaton{S,X}, states=states(A); accumu
             enter=s::S -> begin
                 # We encountered a state, which is coaccessible, hence we don't need
                 # to explore any further.
-                _is_definitiely_coacessible(it, s) && return Break
-                _is_definitiely_not_coacessible(it, s) && return Break
+                _is_definitiely_coacessible(it, A, s) && return Break
+                _is_definitiely_not_coacessible(it, A, s) && return Break
 
-                _mark_coacessible!(it, s, true)
+                _mark_coacessible!(it, A, s, true)
                 push!(path, s)
 
                 # Mark the state as being coaccessible. If we don't find any terminal state
@@ -49,12 +48,12 @@ function coaccessible_states(A::AbstractAutomaton{S,X}, states=states(A); accumu
                 return Continue
             end,
             exit=s::S -> begin
-                _mark_coacessible!(it, s, false)
+                _mark_coacessible!(it, A, s, false)
                 if !isempty(path)
                     pop!(path)
                 end
             end)
-        if _is_definitiely_coacessible(it, σ)
+        if _is_definitiely_coacessible(it, A, σ)
             push!(accumulator, σ)
         end
     end

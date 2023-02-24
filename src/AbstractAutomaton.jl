@@ -24,7 +24,7 @@ Returns all edges in `A`, which start at `σ`. An edge is represented by
 a pair `(l,τ)` where `l` is the label and `τ` the target of the edge.
 """
 edges(A::AbstractAutomaton{S,X}, state::S) where {S,X} =
-    return Iterators.flatten(((l, τ) for τ ∈ E) for (l, E) ∈ edge_lists(A, state))
+    Iterators.flatten(((l, τ) for τ ∈ E) for (l, E) ∈ edge_lists(A, state))
 
 """
     edge_lists(A::AbstractAutomaton{S,X}, σ)

@@ -4,7 +4,7 @@ function wrappee(::AutomatonWrapper{S,X}) where {S,X} end
 
 alphabet(A::AutomatonWrapper{S,X}) where {S,X} = alphabet(wrappee(A))
 has_edge(A::AutomatonWrapper{S,X}, state::S, label::Label{X}) where {S,X} = has_edge(wrappee(A), state, label)
-edges(A::AutomatonWrapper{S,X}, state::S) where {S,X} = edges(wrappee(A), state)
+edge_lists(A::AutomatonWrapper{S,X}, state::S) where {S,X} = edge_lists(wrappee(A), state)
 states(A::AutomatonWrapper{S,X}) where {S,X} = states(wrappee(A))
 trace(A::AutomatonWrapper{S,X}, label::Label{X}, state::S) where {S,X} = trace(wrappee(A), label, state)
 initial_states(A::AutomatonWrapper{S,X}) where {S,X} = initial_states(wrappee(A))

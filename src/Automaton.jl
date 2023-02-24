@@ -70,6 +70,7 @@ end
 Adds a new edge to the automaton given by `(source, label, target)`.
 """
 function add_edge!(A::Automaton{X}, source::State{X}, label::Label{X}, target::State{X}) where {X}
+    # TODO: Check that the edge doesn't already exist?
     push!(source.transitions[indexin(alphabet(A), label)], target)
 end
 
