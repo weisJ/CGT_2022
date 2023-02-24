@@ -80,3 +80,16 @@ function mark_terminal!(A::Automaton{X}, state::State{X}, terminal::Bool=true) w
         delete!(A.terminal_states, state)
     end
 end
+
+"""
+    mark_initial!(::AbstractAutomaton{S,X}, state::S, initial::Bool=true)
+Mark the given state as being initial. By changing the `initial`
+parameter to `false` one is also able to unmark the state.
+"""
+function mark_initial!(A::Automaton{X}, state::State{X}, initial::Bool=true) where {X}
+    if initial
+        push!(A.initial_states, state)
+    else
+        delete!(A.initial_states, state)
+    end
+end
