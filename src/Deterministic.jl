@@ -130,13 +130,16 @@ end
 alphabet(A::SubsetConstructionAutomaton{S,X}) where {S,X} = alphabet(A.inner)
 
 has_edge(::SubsetConstructionAutomaton{S,X}, state::MultiState{X}, label::Label{X}) where {S,X} =
-    label != ϵ && has_key(state.transitions, label)
+    label != ϵ && haskey(state.transitions, label)
 
 edge_lists(::SubsetConstructionAutomaton{S,X}, state::MultiState{X}) where {S,X} =
     ((l, (σ,)) for (l, σ) ∈ state.transitions)
 
 states(A::SubsetConstructionAutomaton{S,X}) where {S,X} = A.states
-trace(A::SubsetConstructionAutomaton{S,X}, label::Label{X}, state::MultiState{X}) where {S,X} = trace(wrappee(A), label, state)
+function trace(A::SubsetConstructionAutomaton{S,X}, label::Label{X}, state::MultiState{X}) where {S,X}
+    has_edge(A, state, label) || return nothing
+    return state.transitions[label]
+end
 
 initial_states(A::SubsetConstructionAutomaton{S,X}) where {S,X} = (A.initial_state,)
 terminal_states(A::SubsetConstructionAutomaton{S,X}) where {S,X} = A.terminal_states
