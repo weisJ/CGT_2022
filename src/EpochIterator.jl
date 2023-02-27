@@ -79,9 +79,9 @@ function traverse(
     A::AbstractAutomaton{S,X},
     α::S,
     it::EpochStateIterator{S,X};
-    enter::Function,
-    exit::Function=s::S -> Continue,
-    edge_filter::Function=(_, _) -> true
-) where {S,X}
+    enter::F1,
+    exit::F2=s::S -> Continue,
+    edge_filter::F3=(_, _) -> true
+) where {S,X,F1,F2,F3}
     do_traverse(A, α, it, enter, exit, edge_filter, false)
 end

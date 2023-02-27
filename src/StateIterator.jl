@@ -28,4 +28,4 @@ stop iteration at the current state.
 The `edge_filter` parameter can be used to filter the edges, which are traversed.
 """
 function traverse(A::AbstractAutomaton{S,X}, α::S, it::StateIterator{S}=state_iterator(A);
-    enter::Function, exit::Function=s::S -> Continue, edge_filter::Function=(_, _) -> true) where {S,X} end
+    enter::F1, exit::F2=s::S -> Continue, edge_filter::F3=(_, _) -> true) where {S,X,F1,F2,F3} end

@@ -112,10 +112,10 @@ function traverse(
     A::UnionAutomaton{S1,S2,X},
     α::TaggedUnion{S1,S2},
     it::UnionStateIterator{S1,S2};
-    enter::Function,
-    exit::Function=s::TaggedUnion{S1,S2} -> Continue,
-    edge_filter::Function=(_, _) -> true
-) where {S1,S2,X}
+    enter::F1,
+    exit::F2=s::TaggedUnion{S1,S2} -> Continue,
+    edge_filter::F3=(_, _) -> true
+) where {S1,S2,X,F1,F2,F3}
     return if α.tag
         traverse(A.A, α.value, it.itA;
             enter=s -> enter(left(S1, S2, s)),
