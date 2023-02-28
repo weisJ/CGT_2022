@@ -1,4 +1,4 @@
-mutable struct State{X} <: EpochState
+mutable struct State{X}
     transitions::DefaultDict{Int,Vector{State{X}}}
     id::Int
     flags::EpochFlags

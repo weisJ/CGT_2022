@@ -23,12 +23,10 @@ function get_flag(epoch::EpochFlags, current_epoch::Int, flag::Int)
     return flag ∈ epoch.flags
 end
 
-abstract type EpochState end
-function epoch_flags(::EpochState)::EpochFlags end
-
-abstract type EpochStateAutomaton{S<:EpochState,X} <: AbstractAutomaton{S,X} end
+abstract type EpochStateAutomaton{S,X} <: AbstractAutomaton{S,X} end
 function epoch(::EpochStateAutomaton{S,X}) where {S,X} end
 function advance_epoch!(::EpochStateAutomaton{S,X}) where {S,X} end
+function epoch_flags(::EpochStateAutomaton{S,X}, ::S)::EpochFlags where {S,X} end
 
 struct EpochStateIterator{S,X} <: StateIterator{S}
     epoch::Int
@@ -38,17 +36,17 @@ struct EpochStateIterator{S,X} <: StateIterator{S}
         new{S,X}(advance_epoch!(A), complete_loops)
 end
 
-set_flag!(it::EpochStateIterator{S,X}, state::EpochState, flag::Int, value::Bool) where {S,X} =
-    set_flag!(epoch_flags(state), it.epoch, flag, value)
+set_flag!(it::EpochStateIterator{S,X}, A::AbstractAutomaton{S,X}, state::S, flag::Int, value::Bool) where {S,X} =
+    set_flag!(epoch_flags(A, state), it.epoch, flag, value)
 
-get_flag(it::EpochStateIterator{S,X}, state::EpochState, flag::Int) where {S,X} =
-    get_flag(epoch_flags(state), it.epoch, flag)
+get_flag(it::EpochStateIterator{S,X}, A::AbstractAutomaton{S,X}, state::S, flag::Int) where {S,X} =
+    get_flag(epoch_flags(A, state), it.epoch, flag)
 
-set_mark!(it::EpochStateIterator{S,X}, ::EpochStateAutomaton{S,X}, state::EpochState, flag::Bool) where {S,X} =
-    set_flag!(it, state, MarkFlag, flag)
+set_mark!(it::EpochStateIterator{S,X}, A::AbstractAutomaton{S,X}, state::S, flag::Bool) where {S,X} =
+    set_flag!(it, A, state, MarkFlag, flag)
 
-get_mark(it::EpochStateIterator{S,X}, ::EpochStateAutomaton{S,X}, state::EpochState) where {S,X} =
-    get_flag(it, state, MarkFlag)
+get_mark(it::EpochStateIterator{S,X}, A::AbstractAutomaton{S,X}, state::S) where {S,X} =
+    get_flag(it, A, state, MarkFlag)
 
 function do_traverse(
     A::AbstractAutomaton{S,X},
@@ -57,10 +55,10 @@ function do_traverse(
     enter::Function, exit::Function, edge_filter::Function,
     parent_state_was_seen::Bool
 )::IterationDecision where {S,X}
-    state_seen = get_flag(it, α, SeenFlag) == true
+    state_seen = get_flag(it, A, α, SeenFlag) == true
     state_seen && !it.complete_loops && return Continue
 
-    set_flag!(it, α, SeenFlag, true)
+    set_flag!(it, A, α, SeenFlag, true)
 
     enter(α) == Break && return Break
 

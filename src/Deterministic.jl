@@ -9,7 +9,7 @@ function is_deterministic(A::AbstractAutomaton{S,X}) where {S,X}
     return true
 end
 
-mutable struct MultiState{X} <: EpochState
+mutable struct MultiState{X}
     transitions::Dict{X,MultiState{X}}
     states::BitSet
     flags::EpochFlags
@@ -25,7 +25,7 @@ function contained_states(inner_states::Vector{S}, state::MultiState{X}) where {
     return (inner_states[i] for i ∈ state.states)
 end
 
-epoch_flags(state::MultiState{X}) where {X} = state.flags
+epoch_flags(::AbstractAutomaton{MultiState{X},X}, state::MultiState{X}) where {X} = state.flags
 
 mutable struct SubsetConstructionAutomaton{S,X} <: EpochStateAutomaton{MultiState{X},X}
     inner::AbstractAutomaton{S,X}
