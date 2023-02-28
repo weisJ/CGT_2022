@@ -34,7 +34,7 @@ mutable struct SubsetConstructionAutomaton{S,X} <: EpochStateAutomaton{MultiStat
     terminal_states::Vector{MultiState{X}}
 
     function SubsetConstructionAutomaton(A::AbstractAutomaton{S,X}) where {S,X}
-        inner_states::Vector{S} = collect(states(A))
+        inner_states::Vector{S} = vec(collect(states(A)))
         start = epsilon_closure(A, inner_states, initial_states(A))
         B = new{S,X}(A, Vector{MultiState{X}}(), start, Vector{MultiState{X}}())
         _subset_construction(A, B, inner_states)
