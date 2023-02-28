@@ -19,5 +19,6 @@ include("Accessible.jl")
 include("Deterministic.jl")
 include("Union.jl")
 include("Intersection.jl")
+include("Loop.jl")
 
 end
