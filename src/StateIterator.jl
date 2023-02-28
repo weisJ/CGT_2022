@@ -14,7 +14,7 @@ or `nothing` if no marker has been set.
 """
 function get_mark(it::StateIterator{S}, A::AbstractAutomaton{S,X}, state::S) where {S,X} end
 
-@enum IterationDecision Continue Break BreakAndExit
+@enum IterationDecision Continue Break
 
 """
     traverse(A::AbstractAutomaton{S,X}, α::S, it::StateIterator{S}=state_iterator(A);
