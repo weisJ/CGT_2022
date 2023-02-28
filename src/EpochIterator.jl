@@ -52,9 +52,9 @@ function do_traverse(
     A::AbstractAutomaton{S,X},
     α::S,
     it::EpochStateIterator{S,X},
-    enter::Function, exit::Function, edge_filter::Function,
+    enter::F1, exit::F2, edge_filter::F3,
     parent_state_was_seen::Bool
-)::IterationDecision where {S,X}
+)::IterationDecision where {S,X,F1,F2,F3}
     state_seen = get_flag(it, A, α, SeenFlag) == true
     state_seen && !it.complete_loops && return Continue
 
