@@ -28,7 +28,7 @@ function has_edge(A::Automaton{X}, state::State{X}, label::Label{X}) where {X}
 end
 
 function edge_list(A::Automaton{X}, state::State{X}, l::Label{X}) where {X}
-    has_edge(A, state, l) || return nothing
+    has_edge(A, state, l) || return State{X}[]
     return state.transitions[indexin(alphabet(A), l)]
 end
 

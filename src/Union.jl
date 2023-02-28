@@ -43,12 +43,8 @@ end
 
 function edge_list(A::UnionAutomaton{S1,S2,X}, state::TaggedUnion{S1,S2}, label::Label{X}) where {S1,S2,X}
     return if state.tag
-        E = edge_list(A.A, state.value, label)
-        isnothing(E) && return nothing
         Iterators.map(s -> left(S1, S2, s), edge_list(A.A, state.value, label))
     else
-        E = edge_list(A.B, state.value, label)
-        isnothing(E) && return nothing
         Iterators.map(s -> right(S1, S2, s), edge_list(A.B, state.value, label))
     end
 end
