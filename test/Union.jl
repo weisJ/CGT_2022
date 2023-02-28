@@ -36,7 +36,10 @@
     @test !CGT.accepts(Bn, [:a, :b])
     @test !CGT.accepts(Bn, [:b, :b, :a])
 
-    C = CGT.UnionAutomaton(An,Bn)
+    C = CGT.UnionAutomaton(An, Bn)
+
+    len = X -> length(collect(X))
+    @test len(CGT.states(C)) == len(CGT.states(An)) + len(CGT.states(Bn))
 
     @test CGT.accepts(C, [:a])
     @test CGT.accepts(C, [:a, :a, :a])
