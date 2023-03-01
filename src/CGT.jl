@@ -25,5 +25,6 @@ include("AbstractWord.jl")
 include("Word.jl")
 include("Orderings.jl")
 include("RewritingSystem.jl")
+include("KnuthBendix.jl")
 
 end
