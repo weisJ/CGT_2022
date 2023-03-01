@@ -21,4 +21,9 @@ include("Union.jl")
 include("Intersection.jl")
 include("Loop.jl")
 
+include("AbstractWord.jl")
+include("Word.jl")
+include("Orderings.jl")
+include("RewritingSystem.jl")
+
 end
