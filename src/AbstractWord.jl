@@ -25,8 +25,11 @@ function Base.similar(w::AbstractWord, ::Type, dims::Base.Dims{1})
     return ans
 end
 
-function Base.:*(w::AbstractWord, v::AbstractWord...)
-    return append!(one(w), w, v...)
+function Base.:*(w::AbstractWord, v::AbstractWord)
+    out = one(w)
+    append!(out, w)
+    append!(out, v)
+    return out
 end
 
 Base.:^(w::AbstractWord, n::Integer) = repeat(w, n)
