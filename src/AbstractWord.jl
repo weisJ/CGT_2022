@@ -65,22 +65,6 @@ function string_repr(w::AbstractWord, A::Alphabet)
     end
 end
 
-function free_rewrite(w::AbstractWord, A::Alphabet)
-    out = one(w)
-    isone(w) && return out
-    i = firstindex(w)
-    while i ≤ lastindex(w)
-        if !isone(out) && hasinverse(A, out[end]) && inv(A, out[end]) == w[i]
-            resize!(out, length(out) - 1)
-        else
-            resize!(out, length(out) + 1)
-            out[end] = w[i]
-        end
-        i += 1
-    end
-    return out
-end
-
 """
     issuffix(v::AbstractWord, w::AbstractWord)
 Check if `v` is a suffix of `w`.
@@ -107,35 +91,3 @@ function isprefix(v::AbstractWord, w::AbstractWord)
 end
 
 suffixes(w::AbstractWord) = (w[i:end] for i in firstindex(w):lastindex(w))
-
-function Base.popfirst!(w::AbstractWord)
-    @assert !isone(w)
-    letter = first(w)
-    for i in firstindex(w):lastindex(w)-1
-        w[i] = w[i+1]
-    end
-    resize!(w, length(w) - 1)
-    return letter
-end
-
-function Base.prepend!(w::AbstractWord, v::AbstractWord)
-    fi = firstindex(w)
-    li = lastindex(w)
-    resize!(w, length(w) + length(v))
-    for idx in li:-1:fi
-        @inbounds w[idx+length(v)] = w[idx]
-    end
-    for (idx, l) in pairs(v)
-        @inbounds w[idx] = l
-    end
-    return w
-end
-
-function Base.prepend!(w::AbstractWord, v::AbstractWord)
-    lw = length(w)
-    lv = length(v)
-    w = resize!(w, lw + lv)
-    w = copyto!(w, lv + 1, w, firstindex(w), lw)
-    w = copyto!(w, v)
-    return w
-end

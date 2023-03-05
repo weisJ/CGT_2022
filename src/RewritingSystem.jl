@@ -1,5 +1,3 @@
-const Rule = Pair{W,W} where {W}
-
 struct RewritingSystem{W<:AbstractWord,O<:WordOrdering}
     rwrules::Vector{Rule{W}}
     ordering::O
