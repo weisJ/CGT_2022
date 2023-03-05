@@ -72,3 +72,31 @@ end
     @test trim_states == real_states
     @test collected_states == real_states
 end
+
+@testset "Non coaccesible states with loop" begin
+    X = CGT.Alphabet([:a, :b])
+    A = CGT.Automaton(X)
+    s1 = CGT.initial(A)
+    s2 = CGT.add_state!(A)
+    s3 = CGT.add_state!(A)
+
+    CGT.mark_terminal!(A, s1)
+    CGT.add_edge!(A, s1, :a, s2)
+    CGT.add_edge!(A, s1, :b, s3)
+    CGT.add_edge!(A, s2, :a, s2)
+    CGT.add_edge!(A, s2, :b, s3)
+    CGT.add_edge!(A, s3, :a, s2)
+    CGT.add_edge!(A, s3, :b, s3)
+
+    accessible_states = CGT.accessible_states(A)
+
+    @test s1 ∈ accessible_states
+    @test s2 ∈ accessible_states
+    @test s3 ∈ accessible_states
+
+    coaccessible_states = CGT.coaccessible_states(A)
+
+    @test s1 ∈ coaccessible_states
+    @test !(s2 ∈ coaccessible_states)
+    @test !(s3 ∈ coaccessible_states)
+end

@@ -60,17 +60,22 @@ function do_traverse(
 
     set_flag!(it, A, α, SeenFlag, true)
 
-    enter(α) == Break && return Break
+    return_state = Continue
 
-    if !parent_state_was_seen
+    if enter(α) == Break
+        return_state = Break
+    elseif !parent_state_was_seen
         for (l, σ) ∈ edges(A, α)
             edge_filter(l, σ) || continue
-            do_traverse(A, σ, it, enter, exit, edge_filter, state_seen) == Break && return Break
+            if do_traverse(A, σ, it, enter, exit, edge_filter, state_seen) == Break
+                return_state = Break
+                break
+            end
         end
     end
 
     exit(α)
-    return Continue
+    return return_state
 end
 
 function traverse(

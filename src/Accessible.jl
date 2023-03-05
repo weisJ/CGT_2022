@@ -22,36 +22,26 @@ _is_definitiely_not_coacessible(it::StateIterator{S}, A::AbstractAutomaton{S,X},
     get_mark(it, A, state) == false
 
 function coaccessible_states(A::AbstractAutomaton{S,X}, states=states(A); accumulator=Vector{S}()) where {S,X}
-    terminal = convert(Set{S}, terminal_states(A))
     it = state_iterator(A; complete_loops=true)
     for σ ∈ states
-        path = S[]
+        encountered_coacessible_state = false
         traverse(A, σ, it;
             enter=s::S -> begin
-                # We encountered a state, which is coaccessible, hence we don't need
-                # to explore any further.
-                _is_definitiely_coacessible(it, A, s) && return Break
+                # The subgraph starting at this vertex doesn't contain a terminal state hence, we don't
+                # want to traverse it any further.
                 _is_definitiely_not_coacessible(it, A, s) && return Break
 
-                _mark_coacessible!(it, A, s, true)
-                push!(path, s)
-
-                # Mark the state as being coaccessible. If we don't find any terminal state
-                # we will unset it in the `exit` call below.
-
-                # We are actually coaccessible. Indicate that we don't want to traverse any further
-                # This should result in `exit` not being called afterwards.
-                if s ∈ terminal
+                # We encountered a state, which is coaccessible, hence we don't need
+                # to explore any further.
+                if _is_definitiely_coacessible(it, A, s) || is_terminal(A, s)
+                    encountered_coacessible_state = true
                     return Break
                 end
 
                 return Continue
             end,
             exit=s::S -> begin
-                _mark_coacessible!(it, A, s, false)
-                if !isempty(path)
-                    pop!(path)
-                end
+                _mark_coacessible!(it, A, s, encountered_coacessible_state)
             end)
         if _is_definitiely_coacessible(it, A, σ)
             push!(accumulator, σ)
