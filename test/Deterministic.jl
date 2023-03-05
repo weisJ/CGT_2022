@@ -44,7 +44,7 @@
 
     B = CGT.SubsetConstructionAutomaton(A)
 
-    @test length(CGT.initial_states(A)) == 1
+    @test length(CGT.initial_states(B)) == 1
     @test CGT.is_deterministic(B)
     @test length(CGT.states(B)) == 7
 end

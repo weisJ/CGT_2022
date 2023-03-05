@@ -22,9 +22,7 @@ end
 
 function add_edge!(A::IndexAutomaton{X}, source::State{X}, label::Label{X}, target::State{X}) where {X}
     add_edge!(A.A, source, label, target)
-    add_edge!(A.A, target, inv(alphabet(A), label), source)
 end
-
 
 function direct_edges!(idxA::IndexAutomaton{X}, rwrules) where {X}
     @assert !isempty(rwrules)
