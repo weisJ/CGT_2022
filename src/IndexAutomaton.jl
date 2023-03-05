@@ -39,7 +39,6 @@ function direct_edges!(idxA::IndexAutomaton{X}, rwrules) where {X}
         σ = α
         for (prefix_length, l) in enumerate(lhs)
             if !has_edge(idxA, σ, A[l])
-                # τ = S(n, prefix_length)
                 τ = add_state!(idxA, IndexData{X}(prefix_length))
                 add_edge!(idxA, σ, A[l], τ)
                 st_prefix = τ => lhs[1:prefix_length]
