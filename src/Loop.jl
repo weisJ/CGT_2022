@@ -4,7 +4,7 @@ _is_in_current_path(it::StateIterator{S}, A::AbstractAutomaton{S,X}, state::S) w
     get_mark(it, A, state) == true
 
 function contains_loop_with_non_trivial_support(A::AbstractAutomaton{S,X}, α::S, it::StateIterator{S}) where {S,X}
-    path = Label{X}[]
+    path = Tuple{Label{X},S}[(ϵ, α)]
     found_non_trivial_loop = false
     traverse(A, α, it;
         enter=s -> begin
@@ -21,19 +21,36 @@ function contains_loop_with_non_trivial_support(A::AbstractAutomaton{S,X}, α::S
         edge_filter=(l, s) -> begin
             if _is_in_current_path(it, A, s)
                 # We are in a loop
-                for label ∈ path
-                    # Check whether a letter in the path is non-trivial
-                    if label != ϵ
-                        found_non_trivial_loop = true
-                        break
+                if l != ϵ
+                    found_non_trivial_loop = true
+                else
+                    for (label, δ) ∈ Iterators.reverse(path)
+                        if δ == s
+                            # We have found the location where the loop closes on itself.
+                            # If by now we haven't found a non-trivial edge there is none:
+                            # As we detect loops as early as possible no further occurance of 's'
+                            # can contribute to a non trivial loop, as it was checked beforehand.
+                            #
+                            # Searching further may bring is into a location in the path which doesn't
+                            # belong to the path. Everything before this situation will belong to it thoug.
+                            break
+                        end
+
+                        # Check whether a letter in the path is non-trivial
+                        if label != ϵ
+                            found_non_trivial_loop = true
+                            break
+                        end
                     end
                 end
                 # The loop is trivial. Just continue the search.
             end
-            push!(path, l)
+            if !found_non_trivial_loop
+                push!(path, (l, s))
+            end
             return true
         end)
-    return !isempty(path)
+    return found_non_trivial_loop
 end
 
 function contains_loop_with_non_trivial_support(A::AbstractAutomaton{S,X}) where {S,X}
