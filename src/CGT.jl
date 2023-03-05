@@ -6,6 +6,9 @@ using DataStructures
 using OrderedCollections
 
 include("Alphabet.jl")
+include("AbstractWord.jl")
+include("Word.jl")
+
 include("AbstractAutomaton.jl")
 include("StateIterator.jl")
 include("EpochIterator.jl")
@@ -21,10 +24,10 @@ include("Union.jl")
 include("Intersection.jl")
 include("Loop.jl")
 
-include("AbstractWord.jl")
-include("Word.jl")
 include("Orderings.jl")
+include("Rewrite.jl")
 include("RewritingSystem.jl")
 include("KnuthBendix.jl")
+include("IndexAutomaton.jl")
 
 end

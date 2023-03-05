@@ -10,6 +10,8 @@ mutable struct State{X}
             EpochFlags())
 end
 
+degree(s::State{X}) where {X} = length(s.transitions)
+
 epoch_flags(state::State{X}) where {X} = state.flags
 
 Base.show(io::IO, state::State) = print(io, "State($(state.id))")

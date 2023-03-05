@@ -91,6 +91,19 @@ function trace(A::AbstractAutomaton{S,X}, w::AbstractVector{X}, σ=initial(A)::S
     return length(w), σ
 end
 
+function trace_by_index_word(A::AbstractAutomaton{S,X}, w::AbstractVector{Int}, σ=initial(A)::S) where {X,S}
+    alph = alphabet(A)
+    for (i, l) in enumerate(w)
+        letter = alph[l]
+        if has_edge(A, σ, letter)
+            σ = trace(A, letter, σ)
+        else
+            return i - 1, σ
+        end
+    end
+    return length(w), σ
+end
+
 
 function accepts(A::AbstractAutomaton{S,X}, w::AbstractVector{X}) where {S,X}
     for α ∈ initial_states(A)
