@@ -1,3 +1,7 @@
+"""
+    accessible_states(A::AbstractAutomaton{S,X}; accumulator=Vector{S}())
+Collects all states accessible from the given starting state 'α' in the automaton 'A'.
+"""
 function accessible_states(A::AbstractAutomaton{S,X}, α::S; accumulator=Vector{S}()) where {S,X}
     traverse(A, α;
         enter=s::S -> begin
@@ -7,6 +11,10 @@ function accessible_states(A::AbstractAutomaton{S,X}, α::S; accumulator=Vector{
     return accumulator
 end
 
+"""
+    accessible_states(A::AbstractAutomaton{S,X}; accumulator=Vector{S}())
+Collects all states accessible from some initial starting state in the automaton 'A'.
+"""
 function accessible_states(A::AbstractAutomaton{S,X}; accumulator=Vector{S}()) where {S,X}
     for α ∈ initial_states(A)
         accessible_states(A, α; accumulator)
@@ -21,6 +29,10 @@ _is_definitiely_coacessible(it::StateIterator{S}, A::AbstractAutomaton{S,X}, sta
 _is_definitiely_not_coacessible(it::StateIterator{S}, A::AbstractAutomaton{S,X}, state::S) where {S,X} =
     get_mark(it, A, state) == false
 
+"""
+    coaccessible_states(A::AbstractAutomaton{S,X}, states=states(A); accumulator=Vector{S}())
+Collects all states in 'states' which admit a path to a terminal state in 'A'.
+"""
 function coaccessible_states(A::AbstractAutomaton{S,X}, states=states(A); accumulator=Vector{S}()) where {S,X}
     it = state_iterator(A; complete_loops=true)
     for σ ∈ states
@@ -50,10 +62,19 @@ function coaccessible_states(A::AbstractAutomaton{S,X}, states=states(A); accumu
     return accumulator
 end
 
+
+"""
+    trim_states(A::AbstractAutomaton{S,X}; accumulator=Vector{S}())
+Collect all states in 'A' which are accessible and coaccesible.
+"""
 function trim_states(A::AbstractAutomaton{S,X}; accumulator=Vector{S}()) where {S,X}
     return coaccessible_states(A, accessible_states(A); accumulator)
 end
 
+"""
+    trimmification(A::AbstractAutomaton{S,X})
+Constructs the subautomaton of 'A' consisting of all trim states.
+"""
 function trimmification(A::AbstractAutomaton{S,X}) where {S,X}
     return SubAutomaton(A, trim_states(A; accumulator=Set{S}()), false)
 end
