@@ -10,6 +10,10 @@ function redirect_terminal_cross_edges!(idxA::IndexAutomaton{X}) where {X}
     end
 end
 
+"""
+    is_group_infinite(rws::RewritingSystem)
+Determine whether the group defined by the rewriting system 'rws' is infinite or not.
+"""
 function is_group_infinite(rws::RewritingSystem)
     idxA = IndexAutomaton(rws)
     # Note: IndexAutomaton is build such that rewrititng is possible.
