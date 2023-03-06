@@ -30,4 +30,6 @@ include("RewritingSystem.jl")
 include("KnuthBendix.jl")
 include("IndexAutomaton.jl")
 
+include("GroupOrder.jl")
+
 end
