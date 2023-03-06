@@ -2,6 +2,10 @@ struct ErrorState end
 
 const CompletionState = Union{S,ErrorState} where {S}
 
+"""
+An automaton which accepts the same language as a given automaton while being complete.
+This is done by rewiring all undefined traces to a single error state.
+"""
 struct AutomatonCompletion{S,X} <: AutomatonWrapper{CompletionState{S},X}
     inner::AbstractAutomaton{S,X}
     error_state::ErrorState
@@ -50,10 +54,18 @@ function is_terminal(A::AutomatonCompletion{S,X}, state::CompletionState{S}) whe
     return is_terminal(A.A, state)
 end
 
+"""
+    completion(A::AbstractAutomaton{S,X})
+Constructs the completion of the automaton 'A'.
+"""
 function completion(A::AbstractAutomaton{S,X}) where {S,X}
     return AutomatonCompletion(A)
 end
 
+"""
+    is_complete(A::AbstractAutomaton{S,X})
+Checks whether the automaton 'A' is complete.
+"""
 function is_complete(A::AbstractAutomaton{S,X}) where {S,X}
     for σ ∈ states(A)
         for l ∈ alphabet(A)
