@@ -1,4 +1,7 @@
-
+"""
+    is_deterministic(A::AbstractAutomaton{S,X})
+Checks whether the automaton 'A' is deterministic.
+"""
 function is_deterministic(A::AbstractAutomaton{S,X}) where {S,X}
     length(initial_states(A)) > 1 && return false
     for σ ∈ states(A)
@@ -9,6 +12,9 @@ function is_deterministic(A::AbstractAutomaton{S,X}) where {S,X}
     return true
 end
 
+"""
+A state representing a subset of states from a different fixed automaton.
+"""
 mutable struct MultiState{X}
     transitions::Dict{X,MultiState{X}}
     states::BitSet
@@ -27,6 +33,11 @@ end
 
 epoch_flags(::AbstractAutomaton{MultiState{X},X}, state::MultiState{X}) where {X} = state.flags
 
+"""
+An automaton which represents the subset construction on a given automaton 'A'.
+
+The implemented algorithm follows section 3 and 4 in https://aclanthology.org/W98-1306.pdf
+"""
 mutable struct SubsetConstructionAutomaton{S,X} <: EpochStateAutomaton{MultiState{X},X}
     inner::AbstractAutomaton{S,X}
     states::Vector{MultiState{X}}
