@@ -1,3 +1,7 @@
+"""
+The automaton accepting the intersection of the languages accepted by two automatons 'A' and 'B'.
+This is done by tracing both automata simultaniously when possible.
+"""
 struct IntersectionAutomaton{S1,S2,X} <: EpochStateAutomaton{Tuple{S1,S2},X}
     A::AbstractAutomaton{S1,X}
     B::AbstractAutomaton{S2,X}
