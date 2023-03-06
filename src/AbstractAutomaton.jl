@@ -91,6 +91,12 @@ function trace(A::AbstractAutomaton{S,X}, w::AbstractVector{X}, σ=initial(A)::S
     return length(w), σ
 end
 
+"""
+    trace_by_index_word(A::AbstractAutomaton{S,X}, w::AbstractVector{Int}, σ=initial(A)::S)
+This method behaves the same way as 'trace(A::AbstractAutomaton{S,X}, w::AbstractVector{X}, σ=initial(A)::S)'
+with the difference that it acts on words in the indices of letters in the alphabet instead of words in the letters
+directly.
+"""
 function trace_by_index_word(A::AbstractAutomaton{S,X}, w::AbstractVector{Int}, σ=initial(A)::S) where {X,S}
     alph = alphabet(A)
     for (i, l) in enumerate(w)
@@ -104,7 +110,11 @@ function trace_by_index_word(A::AbstractAutomaton{S,X}, w::AbstractVector{Int}, 
     return length(w), σ
 end
 
-
+"""
+    accepts(A::AbstractAutomaton{S,X}, w::AbstractVector{X})
+Checks whether the given word is accepted by the automaton i.e. it is fully traceable and tracing terminates in a terminal state
+for some initial starting state.
+"""
 function accepts(A::AbstractAutomaton{S,X}, w::AbstractVector{X}) where {S,X}
     for α ∈ initial_states(A)
         i, σ = trace(A, w, α)
