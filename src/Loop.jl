@@ -24,7 +24,7 @@ function contains_loop_with_non_trivial_support(A::AbstractAutomaton{S,X}, α::S
                 if l != ϵ
                     found_non_trivial_loop = true
                 else
-                    for (label, δ) ∈ Iterators.reverse(path)
+                    for (i, (label, δ)) ∈ Iterators.reverse(enumerate(path))
                         if δ == s
                             # We have found the location where the loop closes on itself.
                             # If by now we haven't found a non-trivial edge there is none:

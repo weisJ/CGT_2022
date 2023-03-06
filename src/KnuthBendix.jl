@@ -1,4 +1,4 @@
-function knuthbendix1(R::RewritingSystem; maxrules = 100)
+function knuthbendix1(R::RewritingSystem; maxrules=100)
     rws = empty(R)
     for r in rwrules(R)
         push!(rws, deepcopy(r))
@@ -111,7 +111,7 @@ function isirreducible(w::AbstractWord, rws::RewritingSystem)
     return !any(r -> occursin(first(r), w), rwrules(rws))
 end
 
-function subwords(w::AbstractWord, minlength = 1, maxlength = length(w))
+function subwords(w::AbstractWord, minlength=1, maxlength=length(w))
     n = length(w)
     return (
         w[i:j] for i in 1:n for j in i:n if minlength <= j - i + 1 <= maxlength
