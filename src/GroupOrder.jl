@@ -26,5 +26,5 @@ function is_group_infinite(rws::RewritingSystem)
     #       outgoing edges of terminal states to be loops to make them dead ends.
     redirect_terminal_cross_edges!(idxA)
     A = trimmification(complement(idxA))
-    return contains_loop_with_non_trivial_support(A)
+    return contains_loop_with_non_trivial_signature(A)
 end

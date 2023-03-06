@@ -3,7 +3,7 @@ _mark_in_current_path!(it::StateIterator{S}, A::AbstractAutomaton{S,X}, state::S
 _is_in_current_path(it::StateIterator{S}, A::AbstractAutomaton{S,X}, state::S) where {S,X} =
     get_mark(it, A, state) == true
 
-function contains_loop_with_non_trivial_support(A::AbstractAutomaton{S,X}, α::S, it::StateIterator{S}) where {S,X}
+function contains_loop_with_non_trivial_signature(A::AbstractAutomaton{S,X}, α::S, it::StateIterator{S}) where {S,X}
     path = Tuple{Label{X},S}[(ϵ, α)]
     found_non_trivial_loop = false
     traverse(A, α, it;
@@ -53,12 +53,16 @@ function contains_loop_with_non_trivial_support(A::AbstractAutomaton{S,X}, α::S
     return found_non_trivial_loop
 end
 
-function contains_loop_with_non_trivial_support(A::AbstractAutomaton{S,X}) where {S,X}
+"""
+    contains_loop_with_non_trivial_signature(A::AbstractAutomaton{S,X})
+Checks whether 'A contains a loop which has a non trivial signature word.
+"""
+function contains_loop_with_non_trivial_signature(A::AbstractAutomaton{S,X}) where {S,X}
     # Reuse the iterator as any loop which incorporates previously encountered states from other
     # initial states, would have resolved to a loop earlier.
     it = state_iterator(A; complete_loops=true)
     for α ∈ initial_states(A)
-        contains_loop_with_non_trivial_support(A, α, it) && return true
+        contains_loop_with_non_trivial_signature(A, α, it) && return true
     end
     return false
 end
