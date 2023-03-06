@@ -1,4 +1,6 @@
-
+"""
+Helper struct for implementing 'EpochStateAutomaton' on a type of automaton.
+"""
 mutable struct EpochFlags
     flags::BitSet
     epochs::MVector{2,Int}
@@ -23,11 +25,36 @@ function get_flag(epoch::EpochFlags, current_epoch::Int, flag::Int)
     return flag ∈ epoch.flags
 end
 
+"""
+Automatons compatible with 'EpochStateIterator' must implement functions:
+    epoch(::EpochStateAutomaton{S,X})
+    advance_epoch!(::EpochStateAutomaton{S,X})
+    epoch_flags(::EpochStateAutomaton{S,X}, ::S)
+"""
 abstract type EpochStateAutomaton{S,X} <: AbstractAutomaton{S,X} end
+"""
+    epoch(A::EpochStateAutomaton{S,X})
+Returns the current epoch of the automaton 'A'.
+"""
 function epoch(::EpochStateAutomaton{S,X}) where {S,X} end
-function advance_epoch!(::EpochStateAutomaton{S,X}) where {S,X} end
+"""
+    advance_epoch!(A::EpochStateAutomaton{S,X})
+Advance the current epoch of 'A' and return it.
+"""
+function advance_epoch!(::EpochStateAutomaton{S,X}) where {S,X} end#
+"""
+    epoch_flags(A::EpochStateAutomaton{S,X}, s::S)
+Access the 'EpochFlags' of the state 's'.
+"""
 function epoch_flags(::EpochStateAutomaton{S,X}, ::S)::EpochFlags where {S,X} end
 
+"""
+An iterator implementation for automatons, which doesn't need to use additional allocations during traversal for
+checking before visited states.
+This is done by storing the seen/mark flags inside the states together with an 'epoch', which is simply a number which gets
+incremented each time the automaton is traversed.
+The value inside the flag is then only valid if the epoch of the flag equals the epoch at the time of transversal.
+"""
 struct EpochStateIterator{S,X} <: StateIterator{S}
     epoch::Int
     complete_loops::Bool
