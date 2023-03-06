@@ -70,6 +70,20 @@ function add_edge!(A::Automaton{X}, source::State{X}, label::Label{X}, target::S
 end
 
 """
+    remove_edge!(A::Automaton{X}, source::State{X}, label::Label{X}, target::State{X})
+Remove the given edge from the automaton.
+"""
+function remove_edge!(A::Automaton{X}, source::State{X}, label::Label{X}, target::State{X}) where {X}
+    @assert has_edge(A, source, label) && target ∈ edge_list(A, source, label)
+    index = indexin(alphabet(A), label)
+    targets = source.transitions[index]
+    deleteat!(targets, findall(x -> x == target, targets))
+    if isempty(targets)
+        delete!(source.transitions, index)
+    end
+end
+
+"""
     mark_terminal!(::AbstractAutomaton{S,X}, state::S, terminal::Bool=true)
 Mark the given state as being terminal i.e. accepting. By changing the `terminal``
 parameter to `false` one is also able to unmark the state.
