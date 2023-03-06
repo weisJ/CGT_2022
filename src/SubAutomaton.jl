@@ -1,4 +1,6 @@
-
+"""
+Automaton induced by a given subset of states.
+"""
 struct SubAutomaton{S,X} <: AutomatonWrapper{S,X}
     inner::AbstractAutomaton{S,X}
     states::Set{S}
