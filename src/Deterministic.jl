@@ -147,6 +147,6 @@ initial_states(A::SubsetConstructionAutomaton{S,X}) where {S,X} = (A.initial_sta
 terminal_states(A::SubsetConstructionAutomaton{S,X}) where {S,X} = A.terminal_states
 is_terminal(A::SubsetConstructionAutomaton{S,X}, state::MultiState{X}) where {S,X} = state ∈ A.terminal_states
 
-state_iterator(A::SubsetConstructionAutomaton{S,X}) where {S,X} = EpochStateIterator(A)
+state_iterator(A::SubsetConstructionAutomaton{S,X}; complete_loops::Bool=false) where {S,X} = EpochStateIterator(A, complete_loops)
 epoch(A::SubsetConstructionAutomaton{State{X},X}) where {X} = epoch(A.inner)
 advance_epoch!(A::SubsetConstructionAutomaton{State{X},X}) where {X} = advance_epoch!(A.inner)
