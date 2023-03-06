@@ -1,3 +1,6 @@
+"""
+Used to distinguish states in a disjoint union, while allowing the types 'S1' and 'S2' to be equal.
+"""
 struct TaggedUnion{S1,S2}
     value::Union{S1,S2}
     tag::Bool
@@ -18,6 +21,10 @@ Base.hash(u::TaggedUnion{S1,S2}) where {S1,S2} = hash(u.value, hash(u.tag))
 Base.show(io::IO, state::TaggedUnion{S1,S2}) where {S1,S2} =
     state.tag ? print(io, "A($(state.value))") : print(io, "B($(state.value))")
 
+"""
+Automaton accepting the union of two languages accepted by automata.
+This is done by building the disjoint union of all states.
+"""
 struct UnionAutomaton{S1,S2,X} <: AbstractAutomaton{TaggedUnion{S1,S2},X}
     A::AbstractAutomaton{S1,X}
     B::AbstractAutomaton{S2,X}
