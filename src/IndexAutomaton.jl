@@ -5,6 +5,10 @@ mutable struct IndexData{X}
     IndexData{X}(prefix_length::Int) where {X} = new{X}(prefix_length)
 end
 
+"""
+Simply wrap the IndexAutomaton construction from class.
+The only difference is that custom data is stored outside the state in a separate 'index_data' table.
+"""
 struct IndexAutomaton{X} <: AutomatonWrapper{State{X},X}
     A::Automaton{X}
     index_data::Dict{State{X}, IndexData{X}}
