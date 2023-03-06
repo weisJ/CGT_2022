@@ -1,5 +1,13 @@
+"""
+An abstract wrapper for automatons which simply modify behaviour of some contained automaton.
+By default it simply delegates all methods on 'AbstractAutomaton' to the wrapped automaton.
+"""
 abstract type AutomatonWrapper{S,X} <: AbstractAutomaton{S,X} end
 
+"""
+    wrappee(::AutomatonWrapper{S,X})
+Access the wrapped automaton for purpose of delegation.
+"""
 function wrappee(::AutomatonWrapper{S,X}) where {S,X} end
 
 alphabet(A::AutomatonWrapper{S,X}) where {S,X} = alphabet(wrappee(A))
