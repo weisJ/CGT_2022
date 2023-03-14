@@ -58,6 +58,9 @@ function direct_edges!(idxA::IndexAutomaton{X}, rwrules) where {X}
         end
         idxA.index_data[σ].value = r
         mark_terminal!(idxA.A, σ)
+        for l ∈ A
+            add_edge!(idxA.A, σ, l, σ)
+        end
     end
     return idxA, states_prefixes
 end
