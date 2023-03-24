@@ -44,3 +44,21 @@ end
         @test CGT.is_group_infinite(cyclic_group_rewriting_system(n)) == false
     end
 end
+
+@testset "Example from Lecture" begin
+    rws = let
+        A = CGT.Alphabet([:a,:b])
+        lenlex = CGT.LenLex(A, [:a,:b])
+        a = CGT.Word([1])
+        b = CGT.Word([2])
+        ϵ = one(a)
+        rws = CGT.RewritingSystem([
+            a^3 => ϵ,
+            b^3 => ϵ,
+            b*a*b*a => a^2*b^2,
+            b^2*a^2 => a*b*a*b
+        ], lenlex)
+        CGT.reduce(CGT.knuthbendix1(rws))
+    end
+    @test CGT.is_group_infinite(rws) == true
+end
